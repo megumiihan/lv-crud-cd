@@ -10,8 +10,9 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::orderby('id', 'desc')->get();
+       // $products = Product::orderby('id', 'desc')->get();
 
+        $products = Product::orderby('id', 'desc')->get();
         return response()->json($products);
     }
 
@@ -45,10 +46,10 @@ class ProductController extends Controller
     }
 
     public function destroy($id)
-     {
-         $product = Product::find($id);
-         $product->delete();
+    {
+        $product = Product::find($id);
+        $product->delete();
 
-         return response()->json('Product successfully deleted!');
-     }
+        return response()->json('Product successfully deleted!');
+    }
 }

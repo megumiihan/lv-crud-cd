@@ -21,7 +21,7 @@
                         <label>Price</label>
                         <input type="text" class="form-control" v-model="product.price">
                     </div>
-                    <button type="button" class="btn btn-primary" @click="updateProduct()"> Update </button>
+                    <button type="button" class="btn btn-primary" v-on:click="updateProduct()"> Update </button>
                 </form>
             </div>
         </div>

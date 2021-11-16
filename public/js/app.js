@@ -2272,32 +2272,77 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      products: {}
+      products: [],
+      search: ""
     };
   },
   created: function created() {
     this.getProducts();
   },
-  methods: {
-    getProducts: function getProducts() {
+  computed: {
+    filteredProducts: function filteredProducts() {
       var _this = this;
 
-      this.axios.get('http://127.0.0.1:8000/api/products').then(function (response) {
-        _this.products = response.data;
+      //returns an array; drops items that are false aka does not contain search words
+
+      /*
+      return this.products.filter((product) => {
+        return product.name.toLowerCase().match(this.search.toLowerCase());
+      });
+      return filtered;
+      */
+      var filtered = this.products.filter(function (el) {
+        return el.name.toLowerCase().match(_this.search.toLowerCase());
+      });
+      return filtered;
+    }
+  },
+  methods: {
+    getProducts: function getProducts() {
+      var _this2 = this;
+
+      this.axios.get("http://127.0.0.1:8000/api/products").then(function (response) {
+        _this2.products = response.data;
       });
     },
     deleteProduct: function deleteProduct(productId) {
-      var _this2 = this;
+      var _this3 = this;
 
       this.axios["delete"]("http://127.0.0.1:8000/api/products/".concat(productId)).then(function (response) {
-        var i = _this2.products.map(function (data) {
+        var i = _this3.products.map(function (data) {
           return data.id;
         }).indexOf(productId);
 
-        _this2.products.splice(i, 1);
+        _this3.products.splice(i, 1);
+      });
+    },
+    sortLowest: function sortLowest() {
+      this.products.price.sort(function (a, b) {
+        return a.price > b.price ? 1 : -1;
+      });
+    },
+    sortHighest: function sortHighest() {
+      this.products.price.sort(function (a, b) {
+        return a.price < b.price ? 1 : -1;
       });
     }
   }
@@ -38093,6 +38138,21 @@ var render = function () {
               attrs: { type: "text" },
               domProps: { value: _vm.product.name },
               on: {
+                keyup: function ($event) {
+                  if (
+                    !$event.type.indexOf("key") &&
+                    _vm._k(
+                      $event.keyCode,
+                      "page-down",
+                      undefined,
+                      $event.key,
+                      undefined
+                    )
+                  ) {
+                    return null
+                  }
+                  return _vm.onPageDown.apply(null, arguments)
+                },
                 input: function ($event) {
                   if ($event.target.composing) {
                     return
@@ -38342,6 +38402,27 @@ var render = function () {
   return _c("div", { staticClass: "container" }, [
     _c("h2", { staticClass: "text-center" }, [_vm._v("Products List")]),
     _vm._v(" "),
+    _c("input", {
+      directives: [
+        {
+          name: "model",
+          rawName: "v-model",
+          value: _vm.search,
+          expression: "search",
+        },
+      ],
+      attrs: { type: "text", placeholder: "search products" },
+      domProps: { value: _vm.search },
+      on: {
+        input: function ($event) {
+          if ($event.target.composing) {
+            return
+          }
+          _vm.search = $event.target.value
+        },
+      },
+    }),
+    _vm._v(" "),
     _c("div", { staticClass: "row" }, [
       _c(
         "div",
@@ -38367,8 +38448,8 @@ var render = function () {
           _vm._v(" "),
           _c(
             "tbody",
-            _vm._l(_vm.products, function (product, key) {
-              return _c("div", { key: product.id }, [
+            _vm._l(_vm.filteredProducts, function (product, key) {
+              return _c("tr", { key: product.id }, [
                 _c("td", [_vm._v(_vm._s(key + 1))]),
                 _vm._v(" "),
                 _c("td", [_vm._v(_vm._s(product.name))]),
@@ -38404,7 +38485,7 @@ var render = function () {
                           },
                         },
                       },
-                      [_vm._v("Delete")]
+                      [_vm._v("\n                Delete\n              ")]
                     ),
                   ],
                   1
@@ -53930,6 +54011,12 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_3__["default"]({
 });
 var app = new vue__WEBPACK_IMPORTED_MODULE_2__["default"]({
   el: '#app',
+  data: {
+    form: {
+      name: '',
+      email: ''
+    }
+  },
   router: router,
   render: function render(h) {
     return h(_app_vue__WEBPACK_IMPORTED_MODULE_4__["default"]);

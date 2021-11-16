@@ -18,6 +18,7 @@ import App from './app.vue';
 import { routes } from './routes';
 
 
+
 const router = new VueRouter({
     mode: 'history',
     routes: routes
@@ -25,6 +26,13 @@ const router = new VueRouter({
 
 const app = new Vue({
     el: '#app',
+    data: {
+        form: {
+            name: '',
+            email: '',
+
+        }
+    },
     router: router,
     render: h => h(App),
 });
